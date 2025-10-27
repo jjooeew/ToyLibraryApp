@@ -1,13 +1,25 @@
-import { StyleSheet, Text, View, Image, Dimensions, TouchableOpacity } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  Dimensions,
+  TouchableOpacity,
+} from "react-native";
 import React from "react";
-import { AntDesign } from "@expo/vector-icons";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 const window = Dimensions.get("window");
 
 const CatalogueCard = ({ image, toyName, toyType, price, onPress }) => {
   return (
     <TouchableOpacity onPress={onPress} style={styles.cardContainer}>
-      <AntDesign style={styles.icon} name="hearto" size={18} color="orange" />
+      <MaterialCommunityIcons
+        style={styles.icon}
+        name="heart-outline"
+        size={18}
+        color="orange"
+      />
       <View style={styles.imageContainer}>
         <Image style={styles.image} source={image} resizeMode="contain" />
       </View>
@@ -39,7 +51,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4.65,
 
     elevation: 8,
-    marginBottom: 16
+    marginBottom: 16,
   },
   icon: {
     alignSelf: "flex-end",

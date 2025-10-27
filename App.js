@@ -12,7 +12,7 @@ import { CartProvider } from "./dataFiles/cartContext";
 
 const Stack = createNativeStackNavigator();
 
-export default App = () => {
+export default function App() {
   const [fontLoaded, setFontLoaded] = useState(false);
 
   useEffect(() => {

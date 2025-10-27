@@ -8,23 +8,22 @@ import {
   Pressable,
 } from "react-native";
 import React from "react";
-import { AntDesign } from "@expo/vector-icons";
 import { useState } from "react";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 const window = Dimensions.get("window");
 
 const CartCard = ({ image, toyName, price }) => {
+  const [quantity, setQuantity] = useState(1);
 
-    const [quantity, setQuantity] = useState(1);
-
-    const decrease = () => {
-        if (1 < quantity) {
-            setQuantity(quantity - 1)
-        }
-    };
-    const increase = () => {
-        setQuantity(quantity + 1)
-    };
+  const decrease = () => {
+    if (1 < quantity) {
+      setQuantity(quantity - 1);
+    }
+  };
+  const increase = () => {
+    setQuantity(quantity + 1);
+  };
 
   return (
     <View style={styles.cardContainer}>
@@ -35,14 +34,25 @@ const CartCard = ({ image, toyName, price }) => {
           <Text style={styles.price}>{price}</Text>
         </View>
         <View style={styles.quantityContainer}>
-            <Pressable  onPress={decrease}><Text style={styles.incrementer}>-</Text></Pressable>
-            <Text style={styles.quantity}>{quantity}</Text>
-            <Pressable onPress={increase}><Text style={styles.incrementer}>+</Text></Pressable>
+          <Pressable onPress={decrease}>
+            <Text style={styles.incrementer}>-</Text>
+          </Pressable>
+          <Text style={styles.quantity}>{quantity}</Text>
+          <Pressable onPress={increase}>
+            <Text style={styles.incrementer}>+</Text>
+          </Pressable>
         </View>
       </View>
       <View style={styles.cardEnd}>
-      <View style={styles.toyImageContainer}><Image source={image} style={styles.toyImage} /></View>
-      <AntDesign style={styles.icon} name="hearto" size={20} color="orange" />
+        <View style={styles.toyImageContainer}>
+          <Image source={image} style={styles.toyImage} />
+        </View>
+        <MaterialCommunityIcons
+          style={styles.icon}
+          name="heart-outline"
+          size={20}
+          color="orange"
+        />
       </View>
     </View>
   );
@@ -55,7 +65,7 @@ const styles = StyleSheet.create({
     padding: 10,
     width: window.width * 0.9,
     height: window.height * 0.15,
-    flexDirection: 'row',
+    flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
     backgroundColor: "#F4F4F4",
@@ -70,38 +80,37 @@ const styles = StyleSheet.create({
 
     elevation: 8,
     marginBottom: 16,
-
   },
   quantityContainer: {
-    flexDirection: 'row',
+    flexDirection: "row",
     gap: 30,
-    alignItems: 'center',
+    alignItems: "center",
   },
-  quantity:{
-    fontFamily: 'Montserrat-SemiBold',
+  quantity: {
+    fontFamily: "Montserrat-SemiBold",
     fontSize: 20,
   },
   incrementer: {
-    fontFamily: 'Montserrat-Regular',
+    fontFamily: "Montserrat-Regular",
     fontSize: 25,
-    color: '#878787'
+    color: "#878787",
   },
-  toyInfo:{
-    height: '100%',
-    width: '70%',
-    justifyContent: 'space-evenly',
-    paddingLeft: 10
+  toyInfo: {
+    height: "100%",
+    width: "70%",
+    justifyContent: "space-evenly",
+    paddingLeft: 10,
   },
-  cardEnd:{
-    width: '100%',
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    gap: 8
+  cardEnd: {
+    width: "100%",
+    flexDirection: "row",
+    alignItems: "flex-start",
+    gap: 8,
   },
   toyImageContainer: {
     width: "20%",
     height: "90%",
-    alignSelf: 'flex-end'
+    alignSelf: "flex-end",
   },
   toyImage: {
     width: "100%",
