@@ -10,20 +10,28 @@ import {
 import React from "react";
 import { useState } from "react";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { useCart } from "../dataFiles/cartContext";
 
 const window = Dimensions.get("window");
 
-const CartCard = ({ image, toyName, price }) => {
-  const [quantity, setQuantity] = useState(1);
+const CartCard = ({ item }) => {
 
-  const decrease = () => {
-    if (1 < quantity) {
-      setQuantity(quantity - 1);
-    }
-  };
-  const increase = () => {
-    setQuantity(quantity + 1);
-  };
+
+  const { add, removeOne } = useCart();
+  const { id, toyName, price, qty, toyImage } = item;
+
+  // const [quantity, setQuantity] = useState(1);
+
+
+
+  // const decrease = () => {
+  //   if (1 < quantity) {
+  //     setQuantity(quantity - 1);
+  //   }
+  // };
+  // const increase = () => {
+  //   setQuantity(quantity + 1);
+  // };
 
   return (
     <View style={styles.cardContainer}>
@@ -34,18 +42,18 @@ const CartCard = ({ image, toyName, price }) => {
           <Text style={styles.price}>{price}</Text>
         </View>
         <View style={styles.quantityContainer}>
-          <Pressable onPress={decrease}>
+          <Pressable onPress={() => removeOne(id)}>
             <Text style={styles.incrementer}>-</Text>
           </Pressable>
-          <Text style={styles.quantity}>{quantity}</Text>
-          <Pressable onPress={increase}>
+          <Text style={styles.quantity}>{qty}</Text>
+          <Pressable onPress={() => add(id, item)}>
             <Text style={styles.incrementer}>+</Text>
           </Pressable>
         </View>
       </View>
       <View style={styles.cardEnd}>
         <View style={styles.toyImageContainer}>
-          <Image source={image} style={styles.toyImage} />
+          <Image source={toyImage} style={styles.toyImage} />
         </View>
         <MaterialCommunityIcons
           style={styles.icon}

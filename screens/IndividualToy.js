@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View, Image, Dimensions } from "react-native";
-import React, {useContext, useState} from "react";
+import React, { useState } from "react";
 import Button from "../components/Button";
-import { CartContext } from "../dataFiles/cartContext";
+import { useCart } from "../dataFiles/cartContext";
 import NavBar from "../components/NavBar";
 
 
@@ -10,15 +10,17 @@ const window = Dimensions.get("window");
 const IndividualToy = ({
   route, navigation
 }) => {
+  const { toy } = route.params;
+
+  const { add } = useCart();
 
   const [addedToCart, setAddedToCart] = useState(false);
 
   const selectAddToCart = () => {
-
+    add(toy.id, toy);
+    setAddedToCart(true)
   }
 
-  const { cart, addToCart, removeFromCart } = useContext(CartContext)
-  const { toy } = route.params;
   return (
     <View style={styles.background}>
       <View style={styles.individualToyContainer}>
@@ -27,17 +29,23 @@ const IndividualToy = ({
           <Text style={styles.toyName}>{toy.toyName}</Text>
           <Text style={styles.toyId}>Toy ID:  {toy.id}</Text>
         </View>
+
         <View style={styles.toyImageContainer}>
           <Image style={styles.toyImage} resizeMode="contain" source={toy.toyImage} />
         </View>
+
         <View style={styles.toyInfoContainer}>
           <Text style={styles.descriptionTitle}>Description</Text>
           <Text style={styles.description}>{toy.description}</Text>
+
           <View style={styles.toyPriceContainer}>
             <Text style={styles.dollarSign}>$</Text>
-            <Text style={styles.toyPrice}>{toy.price}</Text>
+            <Text style={styles.toyPrice}>{Number(toy.price).toFixed(2)}</Text>
           </View>
-          <Button buttonText={"Add to cart"} onPress={() => addToCart(toy)}/>
+         
+          <Button 
+            buttonText={addedToCart ? "Added ✓" : "Add to cart"} 
+            onPress={selectAddToCart}/>
         </View>
       </View>
       <NavBar navigation={navigation} />

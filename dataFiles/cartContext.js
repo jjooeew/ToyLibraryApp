@@ -1,32 +1,67 @@
-import React, {createContext, useState, useContext } from "react";
+import React, {createContext, useState, useContext, useMemo, useReducer } from "react";
 
-export const CartContext = createContext();
+const CartContext = createContext(null);
 
-export const CartProvider = ({ children }) => {
-    const [cart, setCart] = useState([])
-
-    const getTotalItems = () => cart.length;
-
-    const getTotalPrice = () => {
-        let total = 0
-        for (let i = 0; i < cart.length; i++) {
-            total += parseFloat(cart[i].price)
+function cartReducer(state, action) {
+    switch (action.type) {
+        case "ADD": {
+            const { id, item } = action.payload;
+            const current = state.items[id];
+            const qty = (current?.qty ?? 0) + 1;
+            const price = Number(item.price) || 0
+            return { ...state, items: { ...state.items, [id]: {...item, price, qty } } };
         }
-        return total.toFixed(2);
+        case "REMOVE_ONE": {
+            const { id } = action.payload;
+            const next = { ...state.items };
+            if (!next[id]) return state;
+            next[id].qty -= 1;
+            if (next[id].qty <= 0) delete next[id];
+            return { ...state, items: next };
+        }
+        case "REMOVE_ALL": {
+            const { id } = action.payload;
+            const next = { ...state.items };
+            delete next[id];
+            return { ...state, items: next };
+        }
+        case "CLEAR":
+            return { items: {} };
+            default:
+                return state;
     }
-
-
-    const addToCart = (item) => {
-        setCart([...cart, item]);
-    };
-    const removeFromCart = (id) => {
-    setCart(cart.filter((item) => item.id !== id))
-    };
-
-    return (
-    <CartContext.Provider value={{ cart, addToCart, getTotalPrice, removeFromCart, getTotalItems }}>
-        {children}
-    </CartContext.Provider>
-    );
 }
 
+export function CartProvider({ children }) {
+    const [state, dispatch] = useReducer(cartReducer, { items: {} });
+
+    const totals = useMemo(() => {
+        let count = 0, sum = 0;
+        for (const id in state.items) {
+            const { price, qty } = state.items[id];
+            count += qty;
+            sum += price * qty;
+        }
+        return { count, sum };
+    }, [state.items]);
+
+    const value = useMemo(
+        () => ({
+            items: state.items,
+            totals,
+            add: (id, item) => dispatch({ type: "ADD", payload: { id, item } }),
+            removeOne: (id) => dispatch({ type: "REMOVE_ONE", payload: { id } }),
+            removeAll: (id) => dispatch({ type: "REMOVE_ALL", payload: { id } }),
+            clear: () => dispatch({ type: "CLEAR" }),
+        }),
+        [state.items, totals]
+    );
+
+    return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
+}
+
+export const useCart = () => {
+    const ctx = useContext(CartContext);
+    if (!ctx) throw new Error("useCart must be used within <CartProvider />");
+    return ctx
+};
